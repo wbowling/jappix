@@ -837,6 +837,12 @@ function displayMessage(type, xid, hash, name, body, time, stamp, message_type, 
 	// Filter the message
 	var filteredMessage = filterThisMessage(body, name, is_xhtml);
 	
+    var event = jQuery.Event("filterMessage");
+    event.message = filteredMessage;
+    event.name = name;
+    $('#page-engine').trigger(event);
+    filteredMessage = event.message;
+    
 	// Display the received message in the room
 	var messageCode = '<div class="one-line ' + message_type + nick_quote + '"' + data_id + '>';
 	
@@ -901,6 +907,11 @@ function displayMessage(type, xid, hash, name, body, time, stamp, message_type, 
 		// Write the code in the DOM
 		$('#' + hash + ' .content' + group_path).append(messageCode);
 		
+		var event = jQuery.Event("messageShown");
+        event.location = '#' + hash + ' .content' + group_path;
+        event.messageCode = messageCode;
+        $('#page-engine').trigger(event);
+       
 		// Store the last 20 message groups
 		if((type == 'chat') && (message_type == 'user-message')) {
 			// Filter the DOM

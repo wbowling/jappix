@@ -31,6 +31,9 @@ if(!defined('JAPPIX_BASE'))
 	
 	<?php echoGetFiles($hash, $locale, 'js', 'desktop.xml', ''); echo "\n";
 	
+	echoGetFiles($hash, '', 'css', 'plugins.xml', ''); echo "\n";
+	echoGetFiles($hash, $locale, 'js', 'plugins.xml', ''); echo "\n";
+	
 	if(anonymousMode()) {
 		echo "\n\t";
 		echoGetFiles($hash, '', 'css', 'anonymous.xml', '');
