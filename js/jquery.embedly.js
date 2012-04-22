@@ -117,7 +117,7 @@
          return path + "1/oembed";
        };
 
-       var createImageStyle = function() {
+       var createImageStyle = function(oembed) {
            var style = [];
            if (settings.addImageStyles) {
                if (settings.maxWidth) {
@@ -128,6 +128,17 @@
                  units = isNaN(parseInt(settings.maxHeight,10)) ? '' : 'px';
                    style.push("max-height: " + (settings.maxHeight)+units);
                }
+           }
+           if (oembed)
+           {
+                if(oembed.height)
+                {
+                    style.push("height: " + oembed.height);
+                }
+                if (oembed.width)
+                {
+                    style.push("width: " + oembed.width);
+                }
            }
            return style.join(';');
        }
@@ -142,19 +153,13 @@
            var _a, code, style, title, units, thumb, provider, description;
            if ((_a = oembed.type) === 'photo') {
                title = oembed.title || '';
-               code = "<a href='" + dict.url + "' target='_blank'><img style='" + createImageStyle() + "' src='" + oembed.url + "' alt='" + title + "' /></a>";
+               code = "<a href='" + dict.url + "' target='_blank'><img style='" + createImageStyle(oembed) + "' src='" + oembed.url + "' alt='" + title + "' /></a>";
            } else if (_a === 'video') {
                code = oembed.html;
            } else if (_a === 'rich') {
                code = oembed.html;
            } else {
-               title = oembed.title || dict.url;
-               thumb = oembed.thumbnail_url ? "<img src='"+oembed.thumbnail_url+"' class='thumb' style='" + createImageStyle() + "'/>" : "";
-               description = oembed.description ? '<div class="description">'+oembed.description+'</div>' : '';
-               provider = oembed.provider_name ? "<a href='" + oembed.provider_url + "' class='provider'>" + oembed.provider_name + "</a>" : "";
-               code = thumb + "<a href='" + dict.url + "'>" + title + "</a>";
-               code += provider;
-               code += description;
+               code = "<a href='" + dict.url + "' target='_blank'>" + dict.url + "</a>";
            }
            if (settings.wrapElement && settings.wrapElement === 'div' && $.browser.msie && $.browser.version < 9){
                settings.wrapElement = 'span';
