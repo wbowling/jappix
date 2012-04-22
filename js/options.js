@@ -141,8 +141,13 @@ function optionsOpen() {
 	'</div>';
 	
 	// Create the popup
+
+    
 	createPopup('options', html);
 	
+    
+    $('body').trigger("optionsPopup");
+    
 	// Apply the features
 	applyFeatures('options');
 	
@@ -205,6 +210,11 @@ function storeOptions() {
 	var oType = new Array('sounds', 'geolocation', 'roster-showall', 'integratemedias', 'presence-status');
 	var oContent = new Array(sounds, geolocation, showall, integratemedias, status);
 	
+    var event = jQuery.Event("storeOptions");
+    event.oType = oType;
+    event.oContent = oContent;
+    $('body').trigger(event);
+    
 	// New IQ
 	var iq = new JSJaCIQ();
 	iq.setType('set');
@@ -293,7 +303,8 @@ function saveOptions() {
 	
 	if(enabledPEP() && enabledPubSub())
 		setupMicroblog('', NS_URN_MBLOG, persist, maximum, '', '', false);
-	
+        
+	$('body').trigger("saveOptions");
 	// We send the options to the database
 	storeOptions();
 	
@@ -532,6 +543,8 @@ function loadOptions() {
 		$('#integratemedias').attr('checked', false);
 	else
 		$('#integratemedias').attr('checked', true);
+        
+    $('body').trigger("loadOptions");
 }
 
 // Plugin launcher
