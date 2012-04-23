@@ -128,18 +128,21 @@
                  units = isNaN(parseInt(settings.maxHeight,10)) ? '' : 'px';
                    style.push("max-height: " + (settings.maxHeight)+units);
                }
-           }
+
            if (oembed)
            {
                 if(oembed.height)
                 {
-                    style.push("height: " + oembed.height);
+                   units = isNaN(parseInt(oembed.height,10)) ? '' : 'px';
+                   style.push("height: " + (oembed.height)+units);
                 }
                 if (oembed.width)
                 {
-                    style.push("width: " + oembed.width);
+                   units = isNaN(parseInt(oembed.width,10)) ? '' : 'px';
+                   style.push("width: " + (oembed.width)+units);
                 }
            }
+	   }
            return style.join(';');
        }
 
@@ -171,7 +174,7 @@
            // for DOM elements we add the oembed object as a data field to that element and trigger a custom event called oembed
            // with the custom event, developers can do any number of custom interactions with the data that is returned.
            if (typeof dict.node !== "undefined") { $(dict.node).data('oembed', oembed).trigger('embedly-oembed', [oembed]);  }
-           return settings.success(oembed, dict);
+	   return settings.success(oembed, dict);
        };
 
        var processBatch = function(batch){

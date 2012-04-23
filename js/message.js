@@ -907,10 +907,6 @@ function displayMessage(type, xid, hash, name, body, time, stamp, message_type, 
 		// Write the code in the DOM
 		$('#' + hash + ' .content' + group_path).append(messageCode);
 		
-		var event = jQuery.Event("messageShown");
-        event.location = '#' + hash + ' .content' + group_path;
-        event.messageCode = messageCode;
-        $('#page-engine').trigger(event);
        
 		// Store the last 20 message groups
 		if((type == 'chat') && (message_type == 'user-message')) {
@@ -934,4 +930,11 @@ function displayMessage(type, xid, hash, name, body, time, stamp, message_type, 
 	// Scroll to this message
 	if(can_scroll)
 		autoScroll(hash);
+
+	var event = jQuery.Event("messageShown");
+        event.location = '#' + hash + ' .content' + group_path;
+        event.messageCode = messageCode;
+	event.hash = hash;
+        $('#page-engine').trigger(event);
+
 }

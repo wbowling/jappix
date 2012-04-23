@@ -7,11 +7,25 @@ $("body").delegate("#page-engine", "messageShown", function(data){
 
     if(getDB('options', 'embedly') == '0')
 		return true;
+	
+	var hash = data.hash;
+	var cont_scroll = document.getElementById('chat-content-' + hash);
+	var can_scroll = false;
+	if(!cont_scroll.scrollTop || ((cont_scroll.clientHeight + cont_scroll.scrollTop) == cont_scroll.scrollHeight))
+		can_scroll = true;
         
     var customKey = getDB('options', 'embedly-key');
     if (!customKey || customKey.length == 0)
         customKey = _apikey;
-    $(data.location).find('a').not('div.embed a').embedly({key: customKey});
+	$(data.location).find('a').not('div.embed a').embedly({key: customKey}).bind('embedly-oembed', function(e, oembed){
+	
+setTimeout(function(){
+	if(can_scroll)
+		autoScroll(hash);
+	}, 5);
+
+
+	});
 });
 
 
