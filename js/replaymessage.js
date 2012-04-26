@@ -44,6 +44,7 @@ $("body").delegate("#page-engine", "createChat", function(data){
 				}
 
 			});
+});
 	
 
 $("body").delegate("#page-engine", "preSendMessage", function(data){
