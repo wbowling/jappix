@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <jappix xmlns="jappix:file:get">
     <css></css>
-    <js>jquery.embedly.js~embedly.js</js>
+    <js>jquery.embedly.js~embedly.js~replaymessage.js</js>
 </jappix>

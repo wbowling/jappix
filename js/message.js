@@ -402,6 +402,11 @@ function handleMessage(message) {
 
 // Sends a given message
 function sendMessage(hash, type) {
+	var event = jQuery.Event("preSendMessage");
+   	event.hash = hash;
+    	event.type = type;
+    	$('#page-engine').trigger(event);
+
 	// Get the values
 	var message_area = $('#' + hash + ' .message-area');
 	var body = trim(message_area.val());

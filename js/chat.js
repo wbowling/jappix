@@ -180,6 +180,13 @@ function generateChat(type, id, xid, nick) {
 	$(path + 'tools-infos').click(function() {
 		openUserInfos(xid);
 	});
+
+	var event = jQuery.Event("generateChat");
+    	event.type = type;
+   	event.id = id;
+	event.xid = xid;
+	event.nick = nick;
+   	$('#page-engine').trigger(event);
 }
 
 // Generates the chat switch elements
