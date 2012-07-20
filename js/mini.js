@@ -5,9 +5,9 @@ These are the Jappix Mini JS scripts for Jappix
 
 -------------------------------------------------
 
-License: AGPL
-Authors: Vanaryon, hunterjm, Camaran
-Last revision: 30/06/12
+License: dual-licensed under AGPL and MPLv2
+Authors: Vanaryon, hunterjm, Camaran, regilero, Kloadut
+Last revision: 18/06/12
 
 */
 
@@ -394,7 +394,7 @@ function handleIQMini(iq) {
 		
 		iqQuery.appendChild(iq.buildNode('name', {'xmlns': NS_VERSION}, 'Jappix Mini'));
 		iqQuery.appendChild(iq.buildNode('version', {'xmlns': NS_VERSION}, JAPPIX_VERSION));
-		iqQuery.appendChild(iq.buildNode('os', {'xmlns': NS_VERSION}, BrowserDetect.OS));
+		iqQuery.appendChild(iq.buildNode('os', {'xmlns': NS_VERSION}, navigator.platform));
 		
 		con.send(iqResponse);
 		
@@ -723,7 +723,7 @@ function sendMessageMini(aForm) {
 
 // Generates the asked smiley image
 function smileyMini(image, text) {
-	return ' <img class="jm_smiley jm_smiley-' + image + ' jm_images" alt="' + encodeQuotes(text) + '" src="' + JAPPIX_STATIC + 'php/get.php?t=img&amp;f=others/blank.gif" /> ';
+	return ' <img class="jm_smiley jm_smiley-' + image + ' jm_images" alt="' + encodeQuotes(text) + '" src="' + JAPPIX_STATIC + 'img/others/blank.gif' + '" /> ';
 }
 
 // Notifies incoming chat messages
@@ -972,10 +972,25 @@ function createMini(domain, user, password) {
 							'</a>' + 
 							
 							'<div class="jm_status_picker">' + 
-								'<a href="#" data-status="available">' + _e("Available") + '<span class="jm_presence jm_images jm_available"></span></a>' + 
-								'<a href="#" data-status="away">' + _e("Away") + '<span class="jm_presence jm_images jm_away"></span></a>' + 
-								'<a href="#" data-status="dnd">' + _e("Busy") + '<span class="jm_presence jm_images jm_dnd"></span></a>' + 
-								'<a href="#" data-status="unavailable">' + _e("Offline") + '<span class="jm_presence jm_images jm_unavailable"></span></a>' + 
+								'<a href="#" data-status="available">' + 
+									'<span class="jm_presence jm_images jm_available"></span>' + 
+									'<span class="jm_show_text">' + _e("Available") + '</span>' + 
+								'</a>' + 
+								
+								'<a href="#" data-status="away">' + 
+									'<span class="jm_presence jm_images jm_away"></span>' + 
+									'<span class="jm_show_text">' + _e("Away") + '</span>' + 
+								'</a>' + 
+								
+								'<a href="#" data-status="dnd">' + 
+									'<span class="jm_presence jm_images jm_dnd"></span>' + 
+									'<span class="jm_show_text">' + _e("Busy") + '</span>' + 
+								'</a>' + 
+								
+								'<a href="#" data-status="unavailable">' + 
+									'<span class="jm_presence jm_images jm_unavailable"></span>' + 
+									'<span class="jm_show_text">' + _e("Offline") + '</span>' + 
+								'</a>' + 
 							'</div>' + 
 						'</div>' + 
 						'<div class="jm_buddies"></div>' + 
@@ -1382,7 +1397,7 @@ function createMini(domain, user, password) {
 			);
 			
 			// IE6 makes the image blink when animated...
-			if((BrowserDetect.browser == 'Explorer') && (BrowserDetect.version < 7))
+			if(jQuery.browser.msie && ( parseInt(jQuery.browser.version) < 7 ) )
 				return;
 			
 			// Add timers
@@ -1898,12 +1913,12 @@ function showRosterMini() {
 
 // Hides the roster
 function hideRosterMini() {
+	// Close the status picker
+	jQuery('#jappix_mini a.jm_status.active').click();
+	
 	// Hide the roster box
 	jQuery('#jappix_mini div.jm_roster').hide();
 	jQuery('#jappix_mini a.jm_button').removeClass('jm_clicked');
-	
-	// Close the status picker
-	jQuery('#jappix_mini a.jm_status.active').click();
 	
 	// Clear the search box and show all online contacts
 	jQuery('#jappix_mini div.jm_roster div.jm_search input.jm_searchbox').val('').attr('data-value', '');
@@ -2133,6 +2148,8 @@ function handleRosterMini(iq) {
     var nick, hash, xid, subscription;
     
     for (var i=0;i<x; i++) {
+	if (!buddies[i]) continue;
+
         nick = buddies[i][0];
         hash = buddies[i][1];
         xid = buddies[i][2];
@@ -2279,11 +2296,11 @@ function launchMini(autoconnect, show_pane, domain, user, password) {
 	}
 	
 	// Append the Mini stylesheet
-	jQuery('head').append('<link rel="stylesheet" href="' + JAPPIX_STATIC + 'php/get.php?t=css&amp;g=mini.xml" type="text/css" media="all" />');
+	jQuery('head').append('<link rel="stylesheet" href="' + JAPPIX_STATIC + 'css/mini.css' + '" type="text/css" media="all" />');
 	
 	// Legacy IE stylesheet
-	if((BrowserDetect.browser == 'Explorer') && (BrowserDetect.version < 7))
-		jQuery('head').append('<link rel="stylesheet" href="' + JAPPIX_STATIC + 'php/get.php?t=css&amp;f=mini-ie.css" type="text/css" media="all" />');
+	if(jQuery.browser.msie && ( parseInt(jQuery.browser.version) < 7 ) )
+		jQuery('head').append('<link rel="stylesheet" href="' + JAPPIX_STATIC + 'css/mini-ie.css' + '" type="text/css" media="all" />');
 	
 	// Disables the browser HTTP-requests stopper
 	jQuery(document).keydown(function(e) {
@@ -2301,7 +2318,7 @@ function launchMini(autoconnect, show_pane, domain, user, password) {
 	});
 	
 	// Logouts when Jappix is closed
-	if(BrowserDetect.browser == 'Opera') {
+	if(jQuery.browser.opera) {
 		// Emulates onbeforeunload on Opera (link clicked)
 		jQuery('a[href]:not([onclick])').click(function() {
 			// Link attributes

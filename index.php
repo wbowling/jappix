@@ -9,7 +9,7 @@ This is the Jappix PHP application launcher
 
 License: AGPL
 Author: Vanaryon
-Last revision: 27/05/11
+Last revision: 01/06/12
 
 */
 
@@ -64,9 +64,9 @@ else if(isset($_GET['m']) && !empty($_GET['m'])) {
 	
 	else if($force_mode == 'manager')
 		$include_app = $force_mode;
-        
-        else if($force_mode == 'download')
-                $include_app = $force_mode;
+	
+	else if($force_mode == 'download')
+		$include_app = $force_mode;
 }
 
 // Not forced, any cookie stored?
@@ -107,9 +107,8 @@ if(($include_app == 'desktop') || ($include_app == 'mobile')) {
 		$include_app = 'upload';
 	
 	// Save this visit (for the stats)
-	if('off'!==STATISTICS) {
+	if(hasStatistics())
 		writeVisit();
-	}
 }
 
 // Include it!

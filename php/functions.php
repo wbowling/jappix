@@ -9,13 +9,21 @@ These are the PHP functions for Jappix
 
 License: AGPL
 Authors: Vanaryon, LinkMauve, Mathieui, olivierm, regilero
-Last revision: 25/02/12
+Last revision: 21/06/12
 
 */
 
 // The function to check if Jappix is already installed
 function isInstalled() {
 	if(!file_exists(JAPPIX_BASE.'/store/conf/installed.xml'))
+		return false;
+	
+	return true;
+}
+
+// The function to check if statistics are enabled
+function hasStatistics() {
+	if(STATISTICS && (STATISTICS == 'off'))
 		return false;
 	
 	return true;
@@ -40,6 +48,14 @@ function isStatic() {
 // The function to check if this is an upload server
 function isUpload() {
 	if(HOST_UPLOAD && (parse_url(HOST_UPLOAD, PHP_URL_HOST) == $_SERVER['HTTP_HOST']))
+		return true;
+	
+	return false;
+}
+
+// The function to check if any legal disclaimer is defined
+function hasLegal() {
+	if(LEGAL)
 		return true;
 	
 	return false;
@@ -425,6 +441,8 @@ function getLanguageName($code) {
 		'yo' => 'Yorùbá',
 		'za' => 'Saɯ cueŋƅ',
 		'zh' => '中文',
+		'zh-cn'	 => '中文简体',
+		'zh-tw'	 => '中文繁體',
 		'zu' => 'isiZulu'
 	);
 	
@@ -487,7 +505,7 @@ function availableLocales($active_locale) {
 		$current_name = getLanguageName($current_id);
 		
 		// Not valid?
-		if(($current_id == $active_locale) || ($current_name == null))
+		if((strtolower($current_id) == $active_locale) || ($current_name == null))
 			continue;
 		
 		// Add this to the list

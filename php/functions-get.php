@@ -9,7 +9,7 @@ These are the PHP functions for Jappix Get API
 
 License: AGPL
 Authors: Vanaryon, Mathieui, olivierm, regilero
-Last revision: 11/02/12
+Last revision: 12/06/12
 
 */
 
@@ -70,6 +70,12 @@ function setPath($string, $hash, $host, $type, $locale) {
 		
 		// Other "normal" links (no lang parameter)
 		$string = preg_replace('/((\")|(\'))(\.\/)(css|img|store|snd)(\/)(\S+)(css|png|jpg|jpeg|gif|bmp|ogg|oga)((\")|(\'))/', '$1'.$static.'/php/get.php?h='.$hash.'&t=$5&f=$7$8$9', $string);
+
+		// Links to JS that are prefixed with JAPPIX_STATIC (must have a lang parameter)
+		$string = preg_replace('/(\WJAPPIX_STATIC\s*\+\s*)((\")|(\'))(js)(\/)(\S+)(js)((\")|(\'))/', '$1$2'.'php/get.php?h='.$hash.'&l='.$locale.'&t=$5&f=$7$8$9', $string);
+
+		// Other "normal" links prefixed with JAPPIX_STATIC (no lang parameter) (used by mini)
+		$string = preg_replace('/(\WJAPPIX_STATIC\s*\+\s*)((\")|(\'))(css|img|store|snd)(\/)(\S+)(css|png|jpg|jpeg|gif|bmp|ogg|oga)((\")|(\'))/', '$1$2'.'php/get.php?h='.$hash.'&t=$5&f=$7$8$9', $string);
 	}
 	
 	// Replace the CSS strings
@@ -134,17 +140,20 @@ function setConfiguration($string, $locale, $version, $max_upload) {
 		      	'XML_LANG'		=> $locale,
 		      	
 		      	// Jappix parameters
-		      	'JAPPIX_STATIC'		=> staticLocation(),
-		      	'JAPPIX_VERSION'	=> $version,
+		      	'JAPPIX_STATIC'			=> staticLocation(),
+		      	'JAPPIX_VERSION'		=> $version,
 		      	'JAPPIX_MAX_FILE_SIZE'	=> $max_upload,
-		      	'JAPPIX_MAX_UPLOAD'	=> formatBytes($max_upload),
+		      	'JAPPIX_MAX_UPLOAD'		=> formatBytes($max_upload),
 		      	
 		      	// Main configuration
 		      	'SERVICE_NAME'		=> SERVICE_NAME,
 		      	'SERVICE_DESC'		=> SERVICE_DESC,
+		      	'OWNER_NAME'		=> OWNER_NAME,
+		      	'OWNER_WEBSITE'		=> OWNER_WEBSITE,
+		      	'LEGAL'				=> LEGAL,
 		      	'JAPPIX_RESOURCE'	=> JAPPIX_RESOURCE,
-		      	'LOCK_HOST'		=> LOCK_HOST,
-		      	'ANONYMOUS'		=> ANONYMOUS,
+		      	'LOCK_HOST'			=> LOCK_HOST,
+		      	'ANONYMOUS'			=> ANONYMOUS,
 		      	'REGISTRATION'		=> REGISTRATION,
 		      	'BOSH_PROXY'		=> BOSH_PROXY,
 		      	'MANAGER_LINK'		=> MANAGER_LINK,
@@ -154,15 +163,15 @@ function setConfiguration($string, $locale, $version, $max_upload) {
 		      	'HTTPS_FORCE'		=> HTTPS_FORCE,
 		      	'COMPRESSION'		=> COMPRESSION,
 		      	'MULTI_FILES'		=> MULTI_FILES,
-		      	'DEVELOPER'		=> DEVELOPER,
+		      	'DEVELOPER'			=> DEVELOPER,
 		      	
 		      	// Hosts configuration
-		      	'HOST_MAIN'		=> HOST_MAIN,
-		      	'HOST_MUC'		=> HOST_MUC,
+		      	'HOST_MAIN'			=> HOST_MAIN,
+		      	'HOST_MUC'			=> HOST_MUC,
 		      	'HOST_PUBSUB'		=> HOST_PUBSUB,
-		      	'HOST_VJUD'		=> HOST_VJUD,
+		      	'HOST_VJUD'			=> HOST_VJUD,
 		      	'HOST_ANONYMOUS'	=> HOST_ANONYMOUS,
-		      	'HOST_BOSH'		=> $bosh_special,
+		      	'HOST_BOSH'			=> $bosh_special,
 		      	'HOST_BOSH_MAIN'	=> HOST_BOSH_MAIN,
 		      	'HOST_BOSH_MINI'	=> HOST_BOSH_MINI,
 		      	'HOST_STATIC'		=> HOST_STATIC,
