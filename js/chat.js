@@ -181,8 +181,8 @@ function generateChat(type, id, xid, nick) {
 		openUserInfos(xid);
 	});
 
-	var event = jQuery.Event("generateChat");
-    	event.type = type;
+	var event = jQuery.Event("createChat");
+    	event.chatType = type;
    	event.id = id;
 	event.xid = xid;
 	event.nick = nick;

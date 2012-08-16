@@ -404,7 +404,7 @@ function handleMessage(message) {
 function sendMessage(hash, type) {
 	var event = jQuery.Event("preSendMessage");
    	event.hash = hash;
-    	event.type = type;
+    	event.chatType = type;
     	$('#page-engine').trigger(event);
 
 	// Get the values
