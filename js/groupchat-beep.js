@@ -14,7 +14,7 @@ $("body").delegate("#page-engine", "messageShown", function(data){
 
 
 $(document).delegate("body", "optionsPopup", function(){
-        $('<fieldset><legend>Groupchat beeps</legend><label for="groupchat-beeps">Play a sound when there is a new message in groupchats</label><input id="groupchat-beeps" type="checkbox" /></fieldset>').appendTo("#conf1");
+        $('<fieldset><legend>Groupchat beeps</legend><label for="groupchat-beep">Play a sound when there is a new message in groupchats</label><input id="groupchat-beep" type="checkbox" /></fieldset>').appendTo("#conf1");
 });
 
 $(document).delegate("body", "loadOptions", function(){
@@ -33,7 +33,7 @@ $(document).delegate("body", "saveOptions", function(){
 });
 
 $(document).delegate("body", "storeOptions", function(event){
-	event.oType.push("groupchat-beep");
+    event.oType.push("groupchat-beep");
     event.oContent.push(getDB('options', 'groupchat-beep'));
 });
 
