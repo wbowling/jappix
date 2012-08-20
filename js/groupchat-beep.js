@@ -25,9 +25,9 @@ $(document).delegate("body", "loadOptions", function(){
 });
 
 $(document).delegate("body", "saveOptions", function(){
-    var groupchat-beep = '0';
+    var groupchatBeep = '0';
     if($('#groupchat-beep').filter(':checked').size())
-		groupchat-beep = '1';
+		groupchatBeep = '1';
 	setDB('options', 'groupchat-beep', groupchat-beep);
     
 });
