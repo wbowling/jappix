@@ -404,8 +404,8 @@ function handleMessage(message) {
 function sendMessage(hash, type) {
 	var event = jQuery.Event("preSendMessage");
    	event.hash = hash;
-    	event.chatType = type;
-    	$('#page-engine').trigger(event);
+    event.chatType = type;
+    $('#page-engine').trigger(event);
 
 	// Get the values
 	var message_area = $('#' + hash + ' .message-area');
@@ -867,6 +867,7 @@ function displayMessage(type, xid, hash, name, body, time, stamp, message_type, 
     var event = jQuery.Event("filterMessage");
     event.message = filteredMessage;
     event.name = name;
+    event.chatType = type;
     $('#page-engine').trigger(event);
     filteredMessage = event.message;
     
@@ -961,7 +962,8 @@ function displayMessage(type, xid, hash, name, body, time, stamp, message_type, 
 	var event = jQuery.Event("messageShown");
         event.location = '#' + hash + ' .content' + group_path;
         event.messageCode = messageCode;
-	event.hash = hash;
+        event.hash = hash;
+        event.chatType = type;
         $('#page-engine').trigger(event);
 
 }
