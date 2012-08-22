@@ -6,9 +6,15 @@ $("body").delegate("#page-engine", "messageShown", function(data){
     if(getDB('options', 'groupchat-beep') == '0')
 		return true;
 		
-	if (data.chatType == 'groupchat')
-	{
-	    soundPlay(1);
+	var chat_switch = '#page-switch .';
+	var tested = chat_switch + data.hash;
+	var active = $(tested).hasClass('activechan');
+	
+	if(!active || !isFocused()) {
+		if (data.chatType == 'groupchat')
+		{
+	    		soundPlay(1);
+		}
 	}
 });
 
