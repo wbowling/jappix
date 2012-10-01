@@ -7,7 +7,7 @@ This is the Jappix Mini CSS stylesheet
 
 License: dual-licensed under AGPL and MPLv2
 Authors: Vanaryon, Julien, hunterjm, Kloadut
-Last revision: 03/08/12
+Last revision: 22/08/12
 
 */
 
@@ -93,7 +93,11 @@ Last revision: 03/08/12
 	border-color: #666666;
 }
 
-#jappix_mini div.jm_starter,
+#jappix_mini div.jm_starter {
+	float: right;
+	position: relative;
+}
+
 #jappix_mini div.jm_conversations,
 #jappix_mini div.jm_conversation,
 #jappix_mini a.jm_switch {
@@ -171,8 +175,8 @@ Last revision: 03/08/12
 	background-color: #c60505;
 	color: white;
 	font-size: 0.85em;
-	height: 14px;
-	padding-top: 2px;
+	height: 13px;
+	padding-top: 3px;
 }
 
 #jappix_mini div.jm_conversation.jm_type_groupchat span.jm_name {
@@ -429,6 +433,18 @@ Last revision: 03/08/12
 	display: block;
 }
 
+#jappix_mini div.jm_received-messages div.jm_chatstate_typing {
+	background-image: url(../img/wait/wait-typing.gif);
+	background-repeat: no-repeat;
+	background-position: 0 5px;
+	color: #a6a6a6;
+	font-size: 10px;
+	letter-spacing: 1px;
+	margin: 0 0 5px 8px;
+	padding-left: 24px;
+	visibility: hidden;
+}
+
 #jappix_mini input.jm_send-messages {
 	background-color: white;
 	border-color: #999999;
@@ -547,11 +563,11 @@ Last revision: 03/08/12
 
 #jappix_mini span.jm_animate {
 	background-position: 0 0;
-	width: 111px;
-	height: 102px;
+	width: 80px;
+	height: 74px;
 	position: absolute;
-	top: -100px;
-	left: -74px;
+	top: -76px;
+	left: -52px;
 	z-index: 1;
 	display: block;
 }

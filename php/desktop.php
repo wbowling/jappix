@@ -9,7 +9,7 @@ This is the Jappix Desktop PHP/HTML code
 
 License: AGPL
 Author: Vanaryon
-Last revision: 12/06/12
+Last revision: 22/09/12
 
 */
 
@@ -23,7 +23,7 @@ if(!defined('JAPPIX_BASE'))
 
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title><?php echo htmlspecialchars(SERVICE_NAME); ?> &bull; <?php _e("An open social network"); ?></title>
+	<title><?php echo htmlspecialchars(SERVICE_NAME); ?> &bull; <?php echo htmlspecialchars(SERVICE_DESC); ?></title>
 	<link rel="shortcut icon" href="./favicon.ico" />
 	
 	<?php echoGetFiles($hash, '', 'css', 'desktop.xml', ''); echo "\n"; ?>
@@ -65,8 +65,8 @@ if(!anonymousMode() && !httpAuthEnabled()) { ?>
 			<div class="left">
 				<div class="home-images logo"></div>
 				<p class="upper"><?php _e("Communicate with the entire world!"); ?></p>
-				<p class="secondary"><?php _e("Jappix is a great social platform, that you can access wherever you are, whenever you want and communicate with whovever you want."); ?></p>
-				<p class="secondary"><?php _e("It allows you to get in touch with the millions of users who currently use the XMPP network like you do with Jappix. Join the community and stay free!"); ?></p>
+				<p class="secondary"><?php _e("Jappix is an open social platform, that let's you easily get or keep in touch with everyone."); ?></p>
+				<p class="secondary"><?php _e("Join the millions of users who are currently using the XMPP Network (Google Talk, etc), don't stay out!"); ?></p>
 			</div>
 			
 			<div class="right">
@@ -87,7 +87,7 @@ if(!anonymousMode() && !httpAuthEnabled()) { ?>
 						<span class="text"><?php _e("Register"); ?></span>
 					</button>
 					
-					<p class="notice"><?php _e("When you login or register, make sure your password remains secret. Don't give it to others, it is personal!"); ?></p>
+					<p class="notice"><?php _e("For your account safety, when you login or register, make sure your password remains secret."); ?></p>
 				</div>
 				
 				<div class="navigation">
@@ -183,7 +183,7 @@ if(!anonymousMode() && !httpAuthEnabled()) { ?>
 					<a class="desc" href="http://www.post-pro.fr/"><?php _e("Association"); ?></a>
 				</span>
 				<span class="one">
-					<a class="name" href="http://frenchtouch.pro/">FrenchTouch Studio</a>
+					<a class="name" href="http://frenchtouch.pro/">FrenchTouch</a>
 					<a class="desc" href="http://frenchtouch.pro/"><?php _e("Web agency"); ?></a>
 				</span>
 				

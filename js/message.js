@@ -7,7 +7,7 @@ These are the messages JS scripts for Jappix
 
 License: AGPL
 Authors: Vanaryon, Maranda
-Last revision: 10/04/12
+Last revision: 19/08/12
 
 */
 
@@ -24,6 +24,9 @@ function handleMessage(message) {
 	var body = trim(message.getBody());
 	var node = message.getNode();
 	var subject = trim(message.getSubject());
+	
+	// Keep raw message body
+	var raw_body = body;
 	
 	// We generate some values
 	var xid = bareXID(from);
@@ -344,15 +347,22 @@ function handleMessage(message) {
 				if(body.match(regex) && (myNick != resource) && (message_type == 'user-message'))
 					nickQuote = ' my-nick';
 				
-				// We notify the user if there's a new personnal message
+				// We notify the user if there's a new personal message
 				if(nickQuote) {
-					messageNotify(hash, 'personnal');
+					messageNotify(hash, 'personal');
+					quickBoard(from, 'groupchat', raw_body, resource);
 					soundPlay(1);
 				}
 				
 				// We notify the user there's a new unread muc message
-				else
+				else {
 					messageNotify(hash, 'unread');
+
+					//Play sound to all users in the muc, except user who sent the message.
+                    if(myNick != resource) {
+                        soundPlay(1);
+                    }
+				}
 			}
 			
 			// Display the received message
@@ -391,7 +401,8 @@ function handleMessage(message) {
 			displayMessage(type, xid, hash, fromName.htmlEnc(), body, time, stamp, 'user-message', notXHTML, '', 'him');
 			
 			// We notify the user
-			messageNotify(hash, 'personnal');
+			messageNotify(hash, 'personal');
+			quickBoard(xid, 'chat', raw_body, fromName);
 		}
 		
 		return false;
