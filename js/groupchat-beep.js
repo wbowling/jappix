@@ -9,11 +9,16 @@ $("body").delegate("#page-engine", "messageShown", function(data){
 	var chat_switch = '#page-switch .';
 	var tested = chat_switch + data.hash;
 	var active = $(tested).hasClass('activechan');
+	var myNick = getMUCNick(data.hash);
 	
 	if(!active || !isFocused()) {
 		if (data.chatType == 'groupchat')
 		{
-	    		soundPlay(1);
+			if (myNick != data.name)
+			{
+				quickBoard(data.xid, 'groupchat', data.body, data.name);
+	    			soundPlay(1);
+			}
 		}
 	}
 });

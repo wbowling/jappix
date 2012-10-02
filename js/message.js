@@ -975,6 +975,9 @@ function displayMessage(type, xid, hash, name, body, time, stamp, message_type, 
         event.messageCode = messageCode;
         event.hash = hash;
         event.chatType = type;
+	event.xid = xid;
+	event.body = body;
+	event.name = name;
         $('#page-engine').trigger(event);
 
 }
