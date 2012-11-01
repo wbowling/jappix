@@ -38,24 +38,24 @@ if(!defined('JAPPIX_BASE'))
 		<div class="header">
 			<div class="mobile-images"></div>
 		</div>
-		
+
 		<noscript>
 			<div class="notification" id="noscript">
 				<?php _e("Please enable JavaScript"); ?>
 			</div>
 		</noscript>
-		
+
 		<div class="notification" id="error">
 			<?php _e("Error"); ?>
 		</div>
-		
+
 		<div class="notification" id="info">
 			<?php _e("Please wait..."); ?>
 		</div>
-		
+
 		<div class="login">
 			<?php _e("Login"); ?>
-			
+
 			<form action="#" method="post" onsubmit="return doLogin(this);">
 				<input class="xid mobile-images" type="text" name="xid" required="" />
 				<input class="password mobile-images" type="password" id="pwd" name="pwd" required="" />
@@ -65,12 +65,12 @@ if(!defined('JAPPIX_BASE'))
 				<input type="submit" name="ok" value="<?php _e("Here we go!"); ?>" />
 			</form>
 		</div>
-		
+
 		<a class="smartphone" href="http://jappix.mobi/">
 			<span class="title"><?php _e("Jappix for your phone"); ?> »</span>
 			<span class="desc"><?php _e("A single phone app for messages, channels, profiles and much more!"); ?></span>
 		</a>
-		
+
 		<a href="./?m=desktop<?php echo keepGet('m', false); ?>"><?php _e("Desktop"); ?></a>
 		<?php if(hasLegal()) { ?>- <a href="<?php echo htmlspecialchars(LEGAL); ?>"><?php _e("Legal"); ?></a><?php } ?>
 	</div>
