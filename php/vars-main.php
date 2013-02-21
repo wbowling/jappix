@@ -8,8 +8,8 @@ These are the main configuration variables
 -------------------------------------------------
 
 License: AGPL
-Author: Vanaryon
-Last revision: 12/06/12
+Author: Valérian Saliou, Maranda
+Last revision: 31/01/13
 
 */
 
@@ -28,7 +28,6 @@ $lock_host = htmlspecialchars(LOCK_HOST);
 $anonymous_mode = htmlspecialchars(ANONYMOUS);
 $http_auth = htmlspecialchars(HTTP_AUTH);
 $registration = htmlspecialchars(REGISTRATION);
-$bosh_proxy = htmlspecialchars(BOSH_PROXY);
 $manager_link = htmlspecialchars(MANAGER_LINK);
 $groupchats_join = htmlspecialchars(GROUPCHATS_JOIN);
 $groupchats_suggest = htmlspecialchars(GROUPCHATS_SUGGEST);
@@ -39,5 +38,8 @@ $compression = htmlspecialchars(COMPRESSION);
 $multi_files = htmlspecialchars(MULTI_FILES);
 $developer = htmlspecialchars(DEVELOPER);
 $statistics = htmlspecialchars(STATISTICS);
+$register_api = htmlspecialchars(REGISTER_API);
+$xmppd_ctl = htmlspecialchars(XMPPD_CTL);
+$xmppd = htmlspecialchars(XMPPD);
 
 ?>

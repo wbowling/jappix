@@ -8,8 +8,8 @@ This is the main configuration POST handler (install & manager)
 -------------------------------------------------
 
 License: AGPL
-Author: Vanaryon
-Last revision: 12/06/12
+Author: Valérian Saliou, Maranda
+Last revision: 31/01/13
 
 */
 
@@ -77,12 +77,6 @@ if(isset($_POST['registration']) && !empty($_POST['registration']))
 else
 	$registration = 'off';
 
-// BOSH proxy
-if(isset($_POST['bosh_proxy']) && !empty($_POST['bosh_proxy']))
-	$bosh_proxy = 'on';
-else
-	$bosh_proxy = 'off';
-
 // Manager link
 if(isset($_POST['manager_link']) && !empty($_POST['manager_link']))
 	$manager_link = 'on';
@@ -130,7 +124,7 @@ if(isset($_POST['statistics']) && !empty($_POST['statistics']))
 	$statistics = 'on';
 else
 	$statistics = 'off';
-	
+
 // Multiple resources
 if(isset($_POST['multi_files']) && ($_POST['multi_files'] == 'on'))
 	$multi_files = 'on';
@@ -143,8 +137,26 @@ if(isset($_POST['developer']) && ($_POST['developer'] == 'on'))
 else
 	$developer = 'off';
 
+// Register API
+if(isset($_POST['register_api']) && ($_POST['register_api'] == 'on'))
+	$register_api = 'on';
+else
+	$register_api = 'off';
+
+// XMPP Daemon Control Command
+if(isset($_POST['xmppd_ctl']) && !empty($_POST['xmppd_ctl']))
+	$xmppd_ctl = stripslashes(htmlspecialchars($_POST['xmppd_ctl']));
+else
+	$xmppd_ctl = stripslashes(htmlspecialchars($main_default['xmppd_ctl']));
+
+// XMPP Daemon
+if(isset($_POST['xmppd']) && !empty($_POST['xmppd']))
+	$xmppd = stripslashes(htmlspecialchars($_POST['xmppd']));
+else
+	$xmppd = stripslashes(htmlspecialchars($main_default['xmppd']));
+
 // Generate the configuration XML content
-$conf_xml = 
+$conf_xml =
 	'<name>'.$service_name.'</name>
 	<desc>'.$service_desc.'</desc>
 	<owner_name>'.$owner_name.'</owner_name>
@@ -155,7 +167,6 @@ $conf_xml =
 	<anonymous>'.$anonymous_mode.'</anonymous>
 	<http_auth>'.$http_auth.'</http_auth>
 	<registration>'.$registration.'</registration>
-	<bosh_proxy>'.$bosh_proxy.'</bosh_proxy>
 	<manager_link>'.$manager_link.'</manager_link>
 	<groupchats_join>'.$groupchats_join.'</groupchats_join>
 	<groupchats_suggest>'.$groupchats_suggest.'</groupchats_suggest>
@@ -165,7 +176,10 @@ $conf_xml =
 	<compression>'.$compression.'</compression>
 	<multi_files>'.$multi_files.'</multi_files>
 	<developer>'.$developer.'</developer>
-	<statistics>'.$statistics.'</statistics>'
+	<statistics>'.$statistics.'</statistics>
+	<register_api>'.$register_api.'</register_api>
+	<xmppd_ctl>'.$xmppd_ctl.'</xmppd_ctl>
+	<xmppd>'.$xmppd.'</xmppd>'
 ;
 
 // Write the main configuration

@@ -6,8 +6,8 @@ These are the Jappix Mini JS scripts for Jappix
 -------------------------------------------------
 
 License: dual-licensed under AGPL and MPLv2
-Authors: Vanaryon, hunterjm, Camaran, regilero, Kloadut
-Last revision: 22/08/12
+Authors: Valérian Saliou, hunterjm, Camaran, regilero, Kloadut
+Last revision: 23/01/13
 
 */
 
@@ -24,6 +24,7 @@ var MINI_TITLE					= null;
 var MINI_DOMAIN					= null;
 var MINI_USER					= null;
 var MINI_PASSWORD				= null;
+var MINI_ACTIVE					= null;
 var MINI_RECONNECT				= 0;
 var MINI_CHATS					= [];
 var MINI_GROUPCHATS				= [];
@@ -307,7 +308,7 @@ function handleMessageMini(msg) {
 				var stamp = extractStamp(d_stamp);
 				
 				// Is this a groupchat private message?
-				if(exists('#jappix_mini #chat-' + hash + '[data-type=groupchat]')) {
+				if(exists('#jappix_mini #chat-' + hash + '[data-type="groupchat"]')) {
 					// Regenerate some stuffs
 					if((type == 'chat') || (type == 'normal') || !type) {
 						xid = from;
@@ -343,7 +344,7 @@ function handleMessageMini(msg) {
 					if(!nick) {
 						// If the roster does not give us any nick the user may have send us a nickname to use with his first message
 						// @see http://xmpp.org/extensions/xep-0172.html
-						var unknown_entry = jQuery('#jappix_mini a.jm_unknown[data-xid=' + xid + ']');
+						var unknown_entry = jQuery('#jappix_mini a.jm_unknown[data-xid="' + xid + '"]');
 						
 						if(unknown_entry.size() > 0) {
 							nick =  unknown_entry.attr('data-nick');
@@ -375,14 +376,20 @@ function handleMessageMini(msg) {
 				displayMessageMini(type, body, use_xid, nick, hash, time, stamp, message_type);
 				
 				// Notify the user if not focused & the message is not a groupchat old one
-				if((!jQuery(target + ' a.jm_chat-tab').hasClass('jm_clicked') || !isFocused()) && (message_type == 'user-message'))
+				if((!jQuery(target + ' a.jm_chat-tab').hasClass('jm_clicked') || !isFocused() || (MINI_ACTIVE != hash)) && (message_type == 'user-message')) {
+					// Play a sound
+					if(type != 'groupchat')
+						soundPlayMini();
+					
+					// Show a notification bubble
 					notifyMessageMini(hash);
+				}
 				
 				logThis('Message received from: ' + from);
 			}
 			
 			// Chatstate groupchat filter
-			if(exists('#jappix_mini #chat-' + hash + '[data-type=groupchat]')) {
+			if(exists('#jappix_mini #chat-' + hash + '[data-type="groupchat"]')) {
 				xid = from;
 				hash = hex_md5(xid);
 			}
@@ -391,12 +398,12 @@ function handleMessageMini(msg) {
 			resetChatstateMini(xid, hash, type);
 			
 			// Apply new chatstate (if supported)
-			if(jQuery(node).find('active[xmlns=' + NS_CHATSTATES + ']').size() || jQuery(node).find('composing[xmlns=' + NS_CHATSTATES + ']').size()) {
+			if(jQuery(node).find('active[xmlns="' + NS_CHATSTATES + '"]').size() || jQuery(node).find('composing[xmlns="' + NS_CHATSTATES + '"]').size()) {
 				// Set marker to tell other user supports chatstates
 				jQuery('#jappix_mini #chat-' + hash + ' input.jm_send-messages').attr('data-chatstates', 'true');
 				
 				// Composing?
-				if(jQuery(node).find('composing[xmlns=' + NS_CHATSTATES + ']').size())
+				if(jQuery(node).find('composing[xmlns="' + NS_CHATSTATES + '"]').size())
 					displayChatstateMini('composing', xid, hash, type);
 			}
 		}
@@ -491,6 +498,31 @@ function handleIQMini(iq) {
 			
 			logThis('Received local time query: ' + iqFrom);
 		}
+		
+		// Ping
+		else if(jQuery(iqNode).find('ping').size() && (iqType == 'get')) {
+			/* REF: http://xmpp.org/extensions/xep-0199.html */
+			
+			con.send(iqResponse);
+			
+			logThis('Received a ping: ' + iqFrom);
+		}
+		
+		// Not implemented
+		else if(!jQuery(iqNode).find('error').size() && ((iqType == 'get') || (iqType == 'set'))) {
+			// Append stanza content
+			for(var i = 0; i < iqNode.childNodes.length; i++)
+				iqResponse.getNode().appendChild(iqNode.childNodes.item(i).cloneNode(true));
+			
+			// Append error content
+			var iqError = iqResponse.appendNode('error', {'xmlns': NS_CLIENT, 'code': '501', 'type': 'cancel'});
+			iqError.appendChild(iq.buildNode('feature-not-implemented', {'xmlns': NS_STANZAS}));
+			iqError.appendChild(iq.buildNode('text', {'xmlns': NS_STANZAS}, _e("The feature requested is not implemented by the recipient or server and therefore cannot be processed.")));
+			
+			con.send(iqResponse);
+			
+			logThis('Received an unsupported IQ query from: ' + iqFrom);
+		}
 	} catch(e) {
 		logThis('Error on IQ handler: ' + e, 1);
 	}
@@ -527,7 +559,7 @@ function handlePresenceMini(pr) {
 		}
 		
 		// Is this a groupchat presence?
-		var groupchat_path = '#jappix_mini #chat-' + hash + '[data-type=groupchat]';
+		var groupchat_path = '#jappix_mini #chat-' + hash + '[data-type="groupchat"]';
 		var is_groupchat = false;
 		
 		if(exists(groupchat_path)) {
@@ -613,11 +645,11 @@ function handleMUCMini(pr) {
 	// Is it a valid server presence?
 	var valid = false;
 	
-	if(!resource || (resource == unescape(jQuery('#jappix_mini #chat-' + hash + '[data-type=groupchat]').attr('data-nick'))))
+	if(!resource || (resource == unescape(jQuery('#jappix_mini #chat-' + hash + '[data-type="groupchat"]').attr('data-nick'))))
 		valid = true;
 	
 	// Password required?
-	if(valid && jQuery(xml).find('error[type=auth] not-authorized').size()) {
+	if(valid && jQuery(xml).find('error[type="auth"] not-authorized').size()) {
 		// Create a new prompt
 		openPromptMini(printf(_e("This room (%s) is protected with a password."), room));
 		
@@ -648,7 +680,7 @@ function handleMUCMini(pr) {
 	}
 	
 	// Nickname conflict?
-	else if(valid && jQuery(xml).find('error[type=cancel] conflict').size()) {
+	else if(valid && jQuery(xml).find('error[type="cancel"] conflict').size()) {
 		// New nickname
 		var nickname = resource + '_';
 		
@@ -720,7 +752,7 @@ function sendMessageMini(aForm) {
 			
 			// If the roster does not give us any nick the user may have send us a nickname to use with his first message
             // @see http://xmpp.org/extensions/xep-0172.html
-            var known_roster_entry = jQuery('#jappix_mini a.jm_friend[data-xid=' + xid + ']');
+            var known_roster_entry = jQuery('#jappix_mini a.jm_friend[data-xid="' + xid + '"]');
             
 			if(known_roster_entry.size() == 0) {
 		        var subscription = known_roster_entry.attr('data-sub');
@@ -1129,7 +1161,7 @@ function createMini(domain, user, password) {
 			// Generate an array of presence change XIDs
 			var pr_xid = [''];
 			
-			jQuery('#jappix_mini div.jm_conversation[data-type=groupchat]').each(function() {
+			jQuery('#jappix_mini div.jm_conversation[data-type="groupchat"]').each(function() {
 				pr_xid.push(jQuery(this).attr('data-xid'));
 			});
 			
@@ -1540,7 +1572,7 @@ function createMini(domain, user, password) {
 			);
 			
 			// IE6 makes the image blink when animated...
-			if(jQuery.browser.msie && ( parseInt(jQuery.browser.version) < 7 ) )
+			if((BrowserDetect.browser == 'Explorer') && (BrowserDetect.version < 7))
 				return;
 			
 			// Add timers
@@ -1707,7 +1739,7 @@ function openPromptMini(text, value) {
 	// Initialize
 	var prompt = '#jappix_popup div.jm_prompt';
 	var input = prompt + ' form input';
-	var value_input = input + '[type=text]';
+	var value_input = input + '[type="text"]';
 	
 	// Remove the existing prompt
 	closePromptMini();
@@ -1741,7 +1773,7 @@ function openPromptMini(text, value) {
 	});
 	
 	// Cancel event
-	jQuery(input + '[type=reset]').click(function() {
+	jQuery(input + '[type="reset"]').click(function() {
 		try {
 			closePromptMini();
 		}
@@ -2051,6 +2083,18 @@ function chatEventsMini(type, xid, hash) {
 		}
 	});
 	
+	// Focus/Blur events
+	jQuery('#jappix_mini #chat-' + hash + ' input.jm_send-messages').focus(function() {
+		// Store active chat
+		MINI_ACTIVE = hash;
+	})
+	
+	.blur(function() {
+		// Reset active chat
+		if(MINI_ACTIVE == hash)
+			MINI_ACTIVE = null;
+	});
+	
 	// Chatstate events
 	eventsChatstateMini(xid, hash, type);
 }
@@ -2112,7 +2156,7 @@ function hideRosterMini() {
 // Removes a groupchat from DOM
 function removeGroupchatMini(xid) {
 	// Remove the groupchat private chats & the groupchat buddies from the roster
-	jQuery('#jappix_mini div.jm_conversation[data-origin=' + escape(cutResource(xid)) + '], #jappix_mini div.jm_roster div.jm_grouped[data-xid=' + escape(xid) + ']').remove();
+	jQuery('#jappix_mini div.jm_conversation[data-origin="' + escape(cutResource(xid)) + '"], #jappix_mini div.jm_roster div.jm_grouped[data-xid="' + escape(xid) + '"]').remove();
 	
 	// Update the presence counter
 	updateRosterMini();
@@ -2192,7 +2236,7 @@ function addBuddyMini(xid, hash, nick, groupchat, subscription) {
 	// Groupchat buddy
 	if(groupchat) {
 		// Generate the groupchat group path
-		path = '#jappix_mini div.jm_roster div.jm_grouped[data-xid=' + escape(groupchat) + ']';
+		path = '#jappix_mini div.jm_roster div.jm_grouped[data-xid="' + escape(groupchat) + '"]';
 		
 		// Must add a groupchat group?
 		if(!exists(path)) {
@@ -2270,7 +2314,7 @@ function removeBuddyMini(hash, groupchat) {
 	jQuery('#jappix_mini a.jm_friend#friend-' + hash).remove();
 	
 	// Empty group?
-	var group = '#jappix_mini div.jm_roster div.jm_grouped[data-xid=' + escape(groupchat) + ']';
+	var group = '#jappix_mini div.jm_roster div.jm_grouped[data-xid="' + escape(groupchat) + '"]';
 	
 	if(groupchat && !jQuery(group + ' a.jm_friend').size())
 		jQuery(group).remove();
@@ -2324,25 +2368,28 @@ function handleRosterMini(iq) {
 		i++;
 	});
 	
-    // Sort array and loop reverse
-    var buddies = buddies.sort();
-    var x = buddies.length;
-    var nick, hash, xid, subscription;
-    
-    for (var i=0;i<x; i++) {
-	if (!buddies[i]) continue;
-
-        nick = buddies[i][0];
-        hash = buddies[i][1];
-        xid = buddies[i][2];
-        subscription = buddies[i][3];
-    	
-    	if(subscription == 'remove')
+	// Sort array and loop reverse
+	var buddies = buddies.sort();
+	var x = buddies.length;
+	var nick, hash, xid, subscription;
+	
+	for(var i = 0; i < x; i++) {
+		if(!buddies[i])
+			continue;
+		
+		// Current buddy information
+		nick = buddies[i][0];
+		hash = buddies[i][1];
+		xid = buddies[i][2];
+		subscription = buddies[i][3];
+		
+		// Apply current buddy action
+		if(subscription == 'remove')
 			removeBuddyMini(hash);
-    	else
+		else
 			addBuddyMini(xid, hash, nick, null, subscription);
-    }
-    
+	}
+	
 	// Not yet initialized
 	if(!MINI_INITIALIZED)
 		initializeMini();
@@ -2527,8 +2574,6 @@ function eventsChatstateMini(xid, hash, type) {
 		// Nothing in the input, user is active
 		if(!jQuery(this).val())
 			sendChatstateMini('active', xid, hash);
-		
-		// Something was written, user started writing again
 		else
 			sendChatstateMini('composing', xid, hash);
 	})
@@ -2541,11 +2586,46 @@ function eventsChatstateMini(xid, hash, type) {
 		// Nothing in the input, user is inactive
 		if(!jQuery(this).val())
 			sendChatstateMini('inactive', xid, hash);
-		
-		// Something was written, user paused
 		else
 			sendChatstateMini('paused', xid, hash);
 	});
+}
+
+// Plays a sound
+function soundPlayMini() {
+	try {
+		// Not supported!
+		if((BrowserDetect.browser == 'Explorer') && (BrowserDetect.version < 9))
+			return false;
+		
+		// Append the sound container
+		if(!exists('#jappix_mini #jm_audio')) {
+			jQuery('#jappix_mini').append(
+				'<div id="jm_audio">' + 
+					'<audio preload="auto">' + 
+						'<source src="' + JAPPIX_STATIC + 'snd/receive-message.mp3" />' + 
+						'<source src="' + JAPPIX_STATIC + 'snd/receive-message.oga" />' + 
+					'</audio>' + 
+				'</div>'
+			);
+		}
+		
+		// Play the sound
+		var audio_select = document.getElementById('jm_audio').getElementsByTagName('audio')[0];
+		
+		// Avoids Safari bug (2011 and less versions)
+		try {
+			audio_select.load();
+		} finally {
+			audio_select.play();
+		}
+	}
+	
+	catch(e) {}
+	
+	finally {
+		return false;
+	}
 }
 
 // TypeWatch to set a timeout to input value reading
@@ -2597,7 +2677,7 @@ function launchMini(autoconnect, show_pane, domain, user, password) {
 	jQuery('head').append('<link rel="stylesheet" href="' + JAPPIX_STATIC + 'css/mini.css' + '" type="text/css" media="all" />');
 	
 	// Legacy IE stylesheet
-	if(jQuery.browser.msie && ( parseInt(jQuery.browser.version) < 7 ) )
+	if((BrowserDetect.browser == 'Explorer') && (BrowserDetect.version < 7))
 		jQuery('head').append('<link rel="stylesheet" href="' + JAPPIX_STATIC + 'css/mini-ie.css' + '" type="text/css" media="all" />');
 	
 	// Disables the browser HTTP-requests stopper
@@ -2616,7 +2696,7 @@ function launchMini(autoconnect, show_pane, domain, user, password) {
 	});
 	
 	// Logouts when Jappix is closed
-	if(jQuery.browser.opera) {
+	if(BrowserDetect.browser == 'Opera') {
 		// Emulates onbeforeunload on Opera (link clicked)
 		jQuery('a[href]:not([onclick])').click(function() {
 			// Link attributes

@@ -6,7 +6,7 @@ These are the constants JS scripts for Jappix
 -------------------------------------------------
 
 License: dual-licensed under AGPL and MPLv2
-Authors: Stefan Strigler, Vanaryon, Kloadut
+Authors: Stefan Strigler, Valérian Saliou, Kloadut
 Last revision: 12/06/12
 
 */
@@ -142,6 +142,7 @@ var HTTPS_FORCE = null;
 var COMPRESSION = null;
 var MULTI_FILES = null;
 var DEVELOPER = null;
+var REGISTER_API = null;
 
 // Jappix hosts configuration
 var HOST_MAIN = null;

@@ -6,8 +6,8 @@ These are the messages JS scripts for Jappix
 -------------------------------------------------
 
 License: AGPL
-Authors: Vanaryon, Maranda
-Last revision: 19/08/12
+Authors: Valérian Saliou, Maranda
+Last revision: 20/02/13
 
 */
 
@@ -101,10 +101,10 @@ function handleMessage(message) {
 	}
 	
 	// Invite message
-	if($(node).find('x[xmlns=' + NS_MUC_USER + '] invite').size()) {
+	if($(node).find('x[xmlns="' + NS_MUC_USER + '"] invite').size()) {
 		// We get the needed values
-		var iFrom = $(node).find('x[xmlns=' + NS_MUC_USER + '] invite').attr('from');
-		var iRoom = $(node).find('x[xmlns=' + NS_XCONFERENCE + ']').attr('jid');
+		var iFrom = $(node).find('x[xmlns="' + NS_MUC_USER + '"] invite').attr('from');
+		var iRoom = $(node).find('x[xmlns="' + NS_XCONFERENCE + '"]').attr('jid');
 		
 		// Old invite method?
 		if(!iRoom)
@@ -357,8 +357,8 @@ function handleMessage(message) {
 				// We notify the user there's a new unread muc message
 				else {
 					messageNotify(hash, 'unread');
-
-					//Play sound to all users in the muc, except user who sent the message.
+					
+					// Play sound to all users in the muc, except user who sent the message.
                     if(myNick != resource) {
                         soundPlay(1);
                     }
@@ -392,10 +392,9 @@ function handleMessage(message) {
 				
 				// We tell the user that a new chat has started
 				soundPlay(0);
-			}
-			
-			else
+			} else {
 				soundPlay(1);
+			}
 			
 			// Display the received message
 			displayMessage(type, xid, hash, fromName.htmlEnc(), body, time, stamp, 'user-message', notXHTML, '', 'him');
@@ -753,7 +752,7 @@ function generateStyle(hash) {
 	var styles = '#' + hash + ' div.bubble-style';
 	var font = styles + ' a.font-current';
 	var fontsize = styles + ' a.fontsize-current';
-	var checkbox = styles + ' input[type=checkbox]';
+	var checkbox = styles + ' input[type="checkbox"]';
 	var color = '#' + hash + ' .message-area[data-color]';
 	var style = '';
 	
@@ -958,7 +957,7 @@ function displayMessage(type, xid, hash, name, body, time, stamp, message_type, 
 			
 			// Store the data
 			if(store_html)
-				setPersistent('history', hash, store_html);
+				setPersistent(getXID(), 'history', hash, store_html);
 		}
 		
 		// Must get the avatar?

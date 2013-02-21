@@ -8,7 +8,7 @@ This is the Jappix Mobile PHP/HTML code
 -------------------------------------------------
 
 License: AGPL
-Authors: Vanaryon, Camaran
+Authors: Valérian Saliou, Camaran
 Last revision: 31/08/12
 
 */
@@ -57,19 +57,14 @@ if(!defined('JAPPIX_BASE'))
 			<?php _e("Login"); ?>
 
 			<form action="#" method="post" onsubmit="return doLogin(this);">
-				<input class="xid mobile-images" type="text" name="xid" required="" />
-				<input class="password mobile-images" type="password" id="pwd" name="pwd" required="" />
-				<?php if(REGISTRATION != 'off') { ?>
+				<input class="xid mobile-images" type="text" name="xid" required="" placeholder="<?php _e("jid@domain.tld"); ?>" />
+				<input class="password mobile-images" type="password" id="pwd" name="pwd" required="" placeholder="<?php _e("Password"); ?>" />
+				<?php if((REGISTRATION != 'off') && (REGISTER_API != 'on')) { ?>
 				<label><input class="register" type="checkbox" id="reg" name="reg" /><?php _e("Register"); ?></label>
 				<?php } ?>
 				<input type="submit" name="ok" value="<?php _e("Here we go!"); ?>" />
 			</form>
 		</div>
-
-		<a class="smartphone" href="http://jappix.mobi/">
-			<span class="title"><?php _e("Jappix for your phone"); ?> »</span>
-			<span class="desc"><?php _e("A single phone app for messages, channels, profiles and much more!"); ?></span>
-		</a>
 
 		<a href="./?m=desktop<?php echo keepGet('m', false); ?>"><?php _e("Desktop"); ?></a>
 		<?php if(hasLegal()) { ?>- <a href="<?php echo htmlspecialchars(LEGAL); ?>"><?php _e("Legal"); ?></a><?php } ?>

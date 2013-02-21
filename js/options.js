@@ -6,7 +6,7 @@ These are the options JS scripts for Jappix
 -------------------------------------------------
 
 License: AGPL
-Author: Vanaryon
+Author: Valérian Saliou
 Last revision: 17/07/11
 
 */
@@ -199,7 +199,7 @@ function switchOptions(id) {
 	$('#options .one-lap').hide();
 	$('#options #conf' + id).show();
 	$('#options .tab a').removeClass('tab-active');
-	$('#options .tab a[data-key=' + id + ']').addClass('tab-active');
+	$('#options .tab a[data-key="' + id + '"]').addClass('tab-active');
 	
 	return false;
 }

@@ -6,7 +6,7 @@ These are the IQ JS scripts for Jappix
 -------------------------------------------------
 
 License: AGPL
-Author: Vanaryon
+Author: Valérian Saliou
 Last revision: 27/08/11
 
 */
@@ -121,7 +121,7 @@ function handleIQ(iq) {
 	}
 	
 	// Roster Item Exchange query
-	else if($(iqNode).find('x[xmlns=' + NS_ROSTERX + ']').size()) {
+	else if($(iqNode).find('x[xmlns="' + NS_ROSTERX + '"]').size()) {
 		// Open a new notification
 		newNotification('rosterx', iqFrom, [iqNode], '');
 		

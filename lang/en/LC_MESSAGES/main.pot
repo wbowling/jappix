@@ -4,7 +4,7 @@
 # -------------------------------------------------
 
 # License: AGPL
-# Authors: Vanaryon, JanCBorchardt
+# Authors: Valérian Saliou, JanCBorchardt
 # Last revision: 31/08/12
 
 msgid ""
@@ -38,9 +38,6 @@ msgid "Download Jappix for free."
 msgstr ""
 
 msgid "Contribute to the Jappix code."
-msgstr ""
-
-msgid "Jappix for your mobile phone."
 msgstr ""
 
 msgid "Jappix for your company."
@@ -1231,7 +1228,7 @@ msgstr ""
 msgid "Registration allowed"
 msgstr ""
 
-msgid "Use a proxy"
+msgid "Use the built-in BOSH proxy"
 msgstr ""
 
 msgid "Manager link"
@@ -1940,4 +1937,28 @@ msgid "New event!"
 msgstr ""
 
 msgid "%s is typing..."
+msgstr ""
+
+msgid "The security code you entered is invalid. Please retry with another one."
+msgstr ""
+
+msgid "The username you picked is not available. Please try another one."
+msgstr ""
+
+msgid "There was an error registering your account. Please retry."
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Enter password"
+msgstr ""
+
+msgid "Once again..."
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "Security code"
 msgstr ""

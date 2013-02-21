@@ -6,8 +6,8 @@ These are the chat JS scripts for Jappix
 -------------------------------------------------
 
 License: AGPL
-Authors: Vanaryon, Eric
-Last revision: 13/02/12
+Authors: Valérian Saliou, Eric, Maranda
+Last revision: 20/02/13
 
 */
 
@@ -229,7 +229,7 @@ function cleanChat(chat) {
 	$('#page-engine #' + chat + ' .content .one-group').remove();
 	
 	// Clear the history database
-	removePersistent('history', chat);
+	removePersistent(getXID(), 'history', chat);
 	
 	// Focus again
 	$(document).oneTime(10, function() {
@@ -250,7 +250,7 @@ function chatCreate(hash, xid, nick, type) {
 	// If the user is not in our buddy-list
 	if(type == 'chat') {
 		// Restore the chat history
-		var chat_history = getPersistent('history', hash);
+		var chat_history = getPersistent(getXID(), 'history', hash);
 		
 		if(chat_history) {
 			// Generate hashs
@@ -261,7 +261,7 @@ function chatCreate(hash, xid, nick, type) {
 			$('#' + hash + ' .content').append(chat_history);
 			
 			// Filter old groups & messages
-			$('#' + hash + ' .one-group[data-type=user-message]').addClass('from-history').attr('data-type', 'old-message');
+			$('#' + hash + ' .one-group[data-type="user-message"]').addClass('from-history').attr('data-type', 'old-message');
 			$('#' + hash + ' .user-message').removeClass('user-message').addClass('old-message');
 			
 			// Regenerate user names
@@ -282,7 +282,7 @@ function chatCreate(hash, xid, nick, type) {
 		}
 		
 		// Add button
-		if(!exists('#buddy-list .buddy[data-xid=' + escape(xid) + ']'))
+		if(!exists('#buddy-list .buddy[data-xid="' + escape(xid) + '"]'))
 			$('#' + hash + ' .tools-add').click(function() {
 				// Hide the icon (to tell the user all is okay)
 				$(this).hide();
@@ -313,8 +313,18 @@ function chatCreate(hash, xid, nick, type) {
 	var inputDetect = $('#page-engine #' + hash + ' .message-area');
 	
 	inputDetect.focus(function() {
+		// Clean notifications for this chat
 		chanCleanNotify(hash);
-	})
+		
+		// Store focus on this chat!
+		CHAT_FOCUS_HASH = hash;
+	});
+	
+	inputDetect.blur(function() {
+		// Reset storage about focus on this chat!
+		if(CHAT_FOCUS_HASH == hash)
+			CHAT_FOCUS_HASH = null;
+	});
 	
 	inputDetect.keypress(function(e) {
 		// Enter key

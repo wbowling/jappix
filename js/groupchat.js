@@ -6,7 +6,7 @@ These are the groupchat JS scripts for Jappix
 -------------------------------------------------
 
 License: AGPL
-Authors: Vanaryon, Maranda, Eric
+Authors: Valérian Saliou, Maranda, Eric
 Last revision: 13/02/12
 
 */
@@ -87,7 +87,7 @@ function handleMUC(presence) {
 	// Catch the errors
 	if(!handleError(xml)) {
 		// Define some stuffs
-		var muc_user = $(xml).find('x[xmlns=' + NS_MUC_USER + ']');
+		var muc_user = $(xml).find('x[xmlns="' + NS_MUC_USER + '"]');
 		var affiliation = muc_user.find('item').attr('affiliation');
                 var statuscode = parseInt(muc_user.find('status').attr('code'));
 		
@@ -109,11 +109,11 @@ function handleMUC(presence) {
 	}
 	
 	// A password is required
-	else if($(xml).find('error[type=auth] not-authorized').size())
+	else if($(xml).find('error[type="auth"] not-authorized').size())
 		generateMUCAsk('password', room, hash, nickname);
 	
 	// There's a nickname conflict
-	else if($(xml).find('error[type=cancel] conflict').size())
+	else if($(xml).find('error[type="cancel"] conflict').size())
 		generateMUCAsk('nickname', room, hash);
 }
 
